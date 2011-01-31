@@ -10,6 +10,16 @@ module TDiary
 			_orig_eval_rhtml
 		end
 	end
+
+	class TDiaryComment
+		def do_eval_rhtml( prefix )
+			load_plugins
+			@plugin.instance_eval { update_proc } if @comment
+			sn = @diary.section_no ? "p#{@diary.section_no}" : ""
+			anchor_str = @plugin.instance_eval( %Q[anchor "#{@diary.date.strftime('%Y%m%d')}#{sn}"].untaint )
+			raise ForceRedirect::new( "#{@conf.index}#{anchor_str}#c#{'%02d' % @diary.count_comments( true )}" )
+		end
+	end
 end
 
 # Local Variables:
