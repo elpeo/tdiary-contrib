@@ -12,7 +12,7 @@ require 'pathname'
 
 begin
 	require 'json'
-rescue
+rescue LoadError
 	retry if require 'rubygems'
 end
 
