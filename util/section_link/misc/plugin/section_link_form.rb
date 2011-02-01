@@ -34,6 +34,7 @@ end
 MODIFY_CLASS
 
 if @section_number then
+	@section_index = Hash.new( @section_number.to_i - 1 )
 	alias :comment_body_label_orig :comment_body_label
 	def comment_body_label
 		r = %Q|<input type="hidden" name="section" value="#{h( @section_number )}">|
