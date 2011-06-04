@@ -8,6 +8,10 @@
 #   - tdiary/tdiaryext_style.rb
 #   - tdiary/wikiext_style.rb
 
+def section_mode?
+	@mode == 'day' and @cgi.params['section'][0].to_s != ""
+end
+
 #alias :_orig_subtitle_link :subtitle_link
 #def subtitle_link( date, index, subtitle )
 #	if @cgi.params['section'].join('') != ''
