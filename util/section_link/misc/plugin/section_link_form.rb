@@ -10,12 +10,16 @@ module TDiary
 		def initialize( name, mail, body, date = Time::now )
 			initialize_orig( name, mail, body, date )
 			#{if @section_number then
-				%Q|@body = "#p#{@section_number} " + @body|
+				%Q|@body = "#p#{@section_number} " + @body unless /`restore_comment'/ =~ caller.first|
 			end}
 		end
 
 		def body
-			@body.sub( /^#p\\d+\\s+/, '' )
+			if /`store_comment'/ =~ caller.first then
+				@body
+			else
+				@body.sub( /^#p\\d+\\s+/, '' )
+			end
 		end
 
 		def section
