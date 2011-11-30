@@ -3,11 +3,11 @@
 module TDiary
 	class TDiaryDay
 		alias :_orig_eval_rhtml :eval_rhtml
-		def eval_rhtml
+		def eval_rhtml( prefix = '' )
 			if @cgi.params['section'].join('') != ""
 				@diary.section_no = @cgi.params['section'][0]
 			end
-			_orig_eval_rhtml
+			_orig_eval_rhtml( prefix )
 		end
 	end
 
