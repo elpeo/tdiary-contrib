@@ -48,7 +48,7 @@ unless defined?(subtitle)
 end
 
 def init_buttons_status
-	@installed_buttons = ['yaml', 'delicious', 'hatena', 'facebook', 'twitter', 'plusone']
+	@installed_buttons = ['yaml', 'delicious', 'hatena', 'facebook', 'twitter', 'plusone', 'grow']
 	if @conf['section_footer2.isDisplay'].nil?
 	 	@conf['section_footer2.isDisplay'] = ''
 	end
@@ -56,7 +56,7 @@ end
 
 add_header_proc do
   <<-"EOS"
-  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button_wo_al.js" charset="utf-8" async="async"></script>
   <style type="text/css">iframe.hatena-bookmark-button-frame {margin-bottom: -7px; }</style>
   <script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
   <style type="text/css">iframe.twitter-share-button.twitter-count-horizontal {margin-bottom: -6px; }</style>
@@ -74,6 +74,13 @@ add_header_proc do
   {lang: '#{@section_footer2_locale}'}
   </script>
   <style type="text/css">.tags > div > iframe {margin-bottom: -6px !important; }</style>
+  EOS
+end
+
+add_footer_proc do
+  <<-"EOS"
+  <script src="http://growbutton.com/javascripts/button.js?apikey=#{u( @conf['section_footer2.grow.api_key'] )}&insert=false" type="text/javascript"></script>
+  <style type="text/css">.growbutton-ifm {margin-bottom: -7px !important; }</style>
   EOS
 end
 
@@ -194,6 +201,15 @@ def add_plusone(date, index)
 	%Q!<g:plusone size="medium" href="#{permalink(date, index, false)}"></g:plusone> | !
 end
 
+def add_grow( date, index )
+	<<-HTML
+	<span itemscope itemref="rectangle" itemtype="http://growbutton.com/ns#button">
+	<span itemprop="url">#{permalink(date, index, false)}</span>
+	<span itemprop="title">#{h(subtitle(date, index))}</span>
+	</span> |
+	HTML
+end
+
 def add_yaml(date, index)
 	r = ''
 	yaml_dir = "#{@cache_path}/yaml/"
@@ -253,6 +269,7 @@ add_conf_proc('section_footer2', 'Section Footer Button') do
 		@cgi.params['section_footer2.isDisplay'].each do |item|
 			@conf['section_footer2.isDisplay'] << item + '\n'
 		end
+		@conf['section_footer2.grow.api_key'] = @cgi.params['section_footer2.grow.api_key'][0]
 	end
 
 	r = '<h3>表示するボタンをチェックしてください(YAMLをチェックすると各自でインストールしたYAMLのボタンをすべて表示します)</h3>'
@@ -267,6 +284,8 @@ add_conf_proc('section_footer2', 'Section Footer Button') do
 		r << %Q|<input name="section_footer2.isDisplay" value="#{button}" #{item_checked} type="checkbox" />#{button}|
 	end
 	r << '</p>'
+	r << '<h3>Grow! API Key</h3>'
+	r << %Q|<input name="section_footer2.grow.api_key" value="#{h( @conf['section_footer2.grow.api_key'] )}" type="text" size="36" />|
 end
 
 # Local Variables:
